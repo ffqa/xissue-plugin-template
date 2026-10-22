@@ -1,0 +1,22 @@
+{
+  "event": "run_finished",
+  "project": {
+    "id": 1,
+    "name": "demo",
+    "targetBranch": "main"
+  },
+  "issue": {
+    "id": 7,
+    "key": "LOCAL-7",
+    "title": "Template fixture",
+    "status": "review"
+  },
+  "run": {
+    "id": 42,
+    "issueId": 7,
+    "agent": "opencode",
+    "status": "completed",
+    "summary": "Implemented the change"
+  },
+  "timestamp": "2026-01-01T00:10:00Z"
+}

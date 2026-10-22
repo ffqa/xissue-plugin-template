@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+"""Validate an xIssue plugin directory without installing xIssue."""
+
+import json
+import os
+import re
+import sys
+
+import yaml
+
+EVENTS = {
+    "branch_push",
+    "pr_merged",
+    "pr_created",
+    "pr_comment",
+    "pr_review",
+    "notification_dispatch",
+    "issue_created",
+    "issue_status_changed",
+    "run_started",
+    "run_finished",
+    "all",
+    "*",
+}
+PERMISSIONS = {"repo:read", "repo:write", "network", "notify", "process"}
+NAME = re.compile(r"^[a-z0-9][a-z0-9._-]{0,63}$")
+
+
+def fail(message):
+    print(f"invalid: {message}", file=sys.stderr)
+    return 1
+
+
+def main():
+    directory = sys.argv[1] if len(sys.argv) > 1 else "."
+    manifest_path = os.path.join(directory, "plugin.yaml")
+    if not os.path.isfile(manifest_path):
+        return fail(f"missing {manifest_path}")
+    with open(manifest_path, encoding="utf-8") as handle:
+        manifest = yaml.safe_load(handle)
+    if not isinstance(manifest, dict):
+        return fail("manifest must be a mapping")
+    if manifest.get("apiVersion") != 1:
+        return fail("apiVersion must be 1")
+    if not NAME.match(str(manifest.get("name", ""))):
+        return fail("name must match ^[a-z0-9][a-z0-9._-]{0,63}$")
+    if not manifest.get("version"):
+        return fail("version is required")
+    entrypoint = manifest.get("entrypoint")
+    if not entrypoint or os.path.isabs(entrypoint) or ".." in entrypoint.split("/"):
+        return fail("entrypoint must be a relative path without '..'")
+    if not os.path.isfile(os.path.join(directory, entrypoint)):
+        return fail(f"entrypoint {entrypoint} does not exist")
+    events = manifest.get("events")
+    if not isinstance(events, list) or not events:
+        return fail("events must be a non-empty list")
+    unknown = [event for event in events if event not in EVENTS]
+    if unknown:
+        return fail(f"unknown events: {unknown}")
+    permissions = manifest.get("permissions", [])
+    if not isinstance(permissions, list):
+        return fail("permissions must be a list")
+    unknown_permissions = [perm for perm in permissions if perm not in PERMISSIONS]
+    if unknown_permissions:
+        return fail(f"unknown permissions: {unknown_permissions}")
+    print(json.dumps({"ok": True, "name": manifest["name"], "events": events}))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

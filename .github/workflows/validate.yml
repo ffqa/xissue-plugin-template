@@ -1,0 +1,29 @@
+name: validate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: pip install pyyaml
+      - name: Validate manifests
+        run: |
+          python3 scripts/validate_manifest.py .
+          python3 scripts/validate_manifest.py examples/node
+          python3 scripts/validate_manifest.py examples/shell
+      - name: Python tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Node example
+        run: node examples/node/run.js < fixtures/issue_created.json
+      - name: Shell example
+        run: sh examples/shell/run.sh < fixtures/run_finished.json

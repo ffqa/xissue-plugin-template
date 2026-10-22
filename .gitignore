@@ -1,0 +1,7 @@
+config.json
+state.json
+.watcher_state.json
+__pycache__/
+*.pyc
+node_modules/
+.DS_Store

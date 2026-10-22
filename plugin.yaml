@@ -1,0 +1,11 @@
+apiVersion: 1
+name: my-plugin
+version: 0.1.0
+description: Describe what this plugin does in one sentence
+author: your-name
+entrypoint: run.py
+events:
+  - issue_created
+  - run_finished
+permissions:
+  - notify

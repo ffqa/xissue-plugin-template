@@ -1,0 +1,17 @@
+{
+  "event": "issue_created",
+  "project": {
+    "id": 1,
+    "name": "demo",
+    "targetBranch": "main"
+  },
+  "issue": {
+    "id": 7,
+    "key": "LOCAL-7",
+    "title": "Template fixture",
+    "body": "Example payload",
+    "status": "todo",
+    "labels": []
+  },
+  "timestamp": "2026-01-01T00:00:00Z"
+}

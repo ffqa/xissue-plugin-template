@@ -1,0 +1,30 @@
+{
+  "event": "pr_created",
+  "project": {
+    "id": 1,
+    "name": "demo",
+    "targetBranch": "main"
+  },
+  "repo": {
+    "id": 3,
+    "name": "web",
+    "provider": "github",
+    "ownerRepo": "example/web",
+    "defaultBranch": "main",
+    "remoteUrl": "https://github.com/example/web.git"
+  },
+  "issue": {
+    "id": 7,
+    "key": "LOCAL-7",
+    "title": "Template fixture"
+  },
+  "pr": {
+    "number": 12,
+    "title": "Template pull request",
+    "state": "open",
+    "url": "https://github.com/example/web/pull/12",
+    "headRefName": "agent/local-7-run-1",
+    "baseRefName": "main"
+  },
+  "timestamp": "2026-01-01T00:15:00Z"
+}

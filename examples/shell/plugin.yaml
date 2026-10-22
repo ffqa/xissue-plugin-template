@@ -1,0 +1,10 @@
+apiVersion: 1
+name: shell-example
+version: 0.1.0
+description: POSIX shell example for the xIssue plugin contract
+author: your-name
+entrypoint: run.sh
+events:
+  - run_finished
+permissions:
+  - process
