@@ -107,7 +107,8 @@ Action support depends on the event:
 | Action | Supported events |
 |---|---|
 | `notify` | All events |
-| `create_issue`, `trigger_run`, `pull_local`, `merge_pr`, `set_issue_status` | `branch_push`, `pr_comment`, `pr_review` only |
+| `create_issue`, `trigger_run`, `merge_pr` | `branch_push`, `pr_comment`, `pr_review` only |
+| `pull_local`, `set_issue_status` | `branch_push`, `pr_comment`, `pr_review`, `pr_merged` |
 
 Lifecycle events (`issue_*`, `run_*`, `pr_created`, `notification_dispatch`)
 ignore mutating actions to prevent recursive event loops. Other actions are
