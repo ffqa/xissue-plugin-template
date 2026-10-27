@@ -63,7 +63,7 @@ must exist under `ui/`; unknown `ui.slots` are rejected.
 
 ### Web UI
 
-A plugin can ship a sandboxed page and mount it into host slots. Remove the
+A plugin can ship a web page and mount it into host slots. Remove the
 `ui` block if the plugin is lifecycle-only.
 
 | Slot | Where |
