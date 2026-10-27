@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Plugin</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { margin: 0; font: 13px/1.6 system-ui, sans-serif; color: #1f2937; background: transparent; }
+    .card { border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 14px; }
+    .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .grow { flex: 1; }
+    button { border: 1px solid #6b7280; background: transparent; color: inherit; border-radius: 6px; padding: 4px 9px; cursor: pointer; }
+    @media (prefers-color-scheme: dark) {
+      body { color: #e5e7eb; }
+      .card { border-color: #4b5563; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="row"><b id="title">My Plugin</b><span class="grow"></span><span id="slot"></span></div>
+    <div id="context" style="opacity:.75;margin-top:4px">Waiting for host context…</div>
+    <div class="row" style="margin-top:8px">
+      <button id="notify">Notify</button>
+      <button id="host">Read host title</button>
+    </div>
+  </div>
+  <script>
+    const post = (msg) => parent.postMessage(msg, '*');
+    window.addEventListener('message', (event) => {
+      const data = event.data || {};
+      if (data.type !== 'xissue:context') return;
+      document.getElementById('slot').textContent = data.slot || 'standalone';
+      document.getElementById('context').textContent = JSON.stringify(data.context || {});
+    });
+    document.getElementById('notify').onclick = () => post({ type: 'xissue:notify', kind: 'success', message: 'Hello from the plugin UI' });
+    document.getElementById('host').onclick = () => {
+      try { document.getElementById('context').textContent = 'host: ' + parent.document.title; }
+      catch (err) { document.getElementById('context').textContent = 'host blocked: ' + err.message; }
+    };
+    post({ type: 'xissue:ready' });
+  </script>
+</body>
+</html>

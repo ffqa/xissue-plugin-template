@@ -49,11 +49,46 @@ events:
   - issue_created
 permissions:
   - notify                   # informational, not a sandbox
+ui:                          # optional web UI
+  entry: ui/index.html       # must live under ui/
+  title: My Plugin
+  slots:
+    - project.page
 ```
 
 Required fields: `apiVersion`, `name`, `version`, `entrypoint`, `events`.
 Unknown event names, permissions, API versions, absolute entrypoints, and
-entrypoints escaping the plugin directory are rejected.
+entrypoints escaping the plugin directory are rejected. Optional `ui.entry`
+must exist under `ui/`; unknown `ui.slots` are rejected.
+
+### Web UI
+
+A plugin can ship a sandboxed page and mount it into host slots. Remove the
+`ui` block if the plugin is lifecycle-only.
+
+| Slot | Where |
+|---|---|
+| `project.header` | Project page, under the title row |
+| `project.page` | Project page, below the board |
+| `issue.actions` | Issue page, under the header |
+| `issue.page` | Issue page, at the bottom |
+
+Open the standalone page at `/plugins/<plugin-id>`. In xIssue, plugins are
+trusted operator-installed extensions: by default the iframe is same-origin
+and can use `parent.document` and `/api/*`. Settings → General →
+**插件 UI 沙盒模式** enables a same-origin-blocking sandbox for less trusted
+plugins; then only the `postMessage` bridge works.
+
+Bridge messages:
+
+| Direction | Message |
+|---|---|
+| plugin → host | `{type:"xissue:ready"}` |
+| host → plugin | `{type:"xissue:context", slot, context}` |
+| plugin → host | `{type:"xissue:notify", kind:"info"\|"success"\|"error", message}` |
+| plugin → host | `{type:"xissue:open", path:"/issues/1"}` |
+| plugin → host | `{type:"xissue:reload"}` |
+| plugin → host | `{type:"xissue:resize", height: 320}` |
 
 ### Events
 

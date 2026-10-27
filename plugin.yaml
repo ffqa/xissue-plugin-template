@@ -9,3 +9,8 @@ events:
   - run_finished
 permissions:
   - notify
+ui:
+  entry: ui/index.html
+  title: My Plugin
+  slots:
+    - project.page
