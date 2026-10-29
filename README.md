@@ -156,7 +156,7 @@ agent in two ways:
 const info = await fetch('/api/plugins/ai').then(r => r.json());
 const res = await fetch('/api/plugins/ai', {
   method: 'POST',
-  headers: {'Content-Type': 'application/json'},
+  headers: {'Content-Type': 'application/json', 'X-XIssue': '1'},
   body: JSON.stringify({prompt: 'Summarize this issue: ...'}),
 }).then(r => r.json());
 console.log(res.text);
