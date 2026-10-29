@@ -93,6 +93,8 @@ Bridge messages:
 | plugin → host | `{type:"xissue:resize", height: 320}` |
 | plugin → host | `{type:"xissue:open-modal", title:"Merge note", height:480}` |
 | plugin → host | `{type:"xissue:close-modal"}` |
+| plugin → host | `{type:"xissue:ai", requestId:"1", prompt:"…", agent?, model?}` |
+| host → plugin | `{type:"xissue:ai-result", requestId:"1", data?, error?}` |
 
 ### Events
 
@@ -143,6 +145,37 @@ Issue payloads now also carry the host's current metadata:
 A toolbar slot should render a compact button. Use `xissue:open-modal` to ask
 the host to open the same UI in a modal; the modal instance receives
 `modal:true` in its context and can render the full panel.
+
+### Using the host AI agent
+
+Do not scan `/api/agents` or spawn CLIs yourself. The host exposes the default
+agent in two ways:
+
+```js
+// Trusted (non-sandbox) iframe:
+const info = await fetch('/api/plugins/ai').then(r => r.json());
+const res = await fetch('/api/plugins/ai', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({prompt: 'Summarize this issue: ...'}),
+}).then(r => r.json());
+console.log(res.text);
+```
+
+Sandboxed iframes use the bridge:
+
+```js
+parent.postMessage({type:'xissue:ai', requestId:'1', prompt:'Summarize...'}, '*');
+window.addEventListener('message', (e) => {
+  if (e.data?.type === 'xissue:ai-result' && e.data.requestId === '1') {
+    console.log(e.data.data?.text ?? e.data.error);
+  }
+});
+```
+
+`agent` and `model` are optional; omit them to use the global default and its
+default model. Calls run in a throwaway workspace with all tool permissions
+rejected: the agent can generate text, but cannot read files or run commands.
 
 Plugins can also call the host API from their UI. In the default trusted mode
 the iframe is same-origin, so `fetch('/api/issues/<id>')` works. When the global
