@@ -70,8 +70,10 @@ A plugin can ship a web page and mount it into host slots. Remove the
 |---|---|
 | `project.header` | Project page, under the title row |
 | `project.page` | Project page, below the board |
+| `project.toolbar` | Compact 150×28 slot in the project action row |
 | `issue.actions` | Issue page, under the header |
 | `issue.page` | Issue page, at the bottom |
+| `issue.toolbar` | Compact 150×28 slot next to Issue actions |
 
 Open the standalone page at `/plugins/<plugin-id>`. In xIssue, plugins are
 trusted operator-installed extensions: by default the iframe is same-origin
@@ -84,11 +86,13 @@ Bridge messages:
 | Direction | Message |
 |---|---|
 | plugin → host | `{type:"xissue:ready"}` |
-| host → plugin | `{type:"xissue:context", slot, context}` |
+| host → plugin | `{type:"xissue:context", slot, modal, context}` |
 | plugin → host | `{type:"xissue:notify", kind:"info"\|"success"\|"error", message}` |
 | plugin → host | `{type:"xissue:open", path:"/issues/1"}` |
 | plugin → host | `{type:"xissue:reload"}` |
 | plugin → host | `{type:"xissue:resize", height: 320}` |
+| plugin → host | `{type:"xissue:open-modal", title:"Merge note", height:480}` |
+| plugin → host | `{type:"xissue:close-modal"}` |
 
 ### Events
 
@@ -135,6 +139,10 @@ Issue payloads now also carry the host's current metadata:
 | `backlogRank` | Manual Backlog order within the project |
 | `remoteNumber` / `remoteUrl` | Bound remote Issue id and URL |
 | `prUrl` / `prState` | Latest associated PR and its state |
+
+A toolbar slot should render a compact button. Use `xissue:open-modal` to ask
+the host to open the same UI in a modal; the modal instance receives
+`modal:true` in its context and can render the full panel.
 
 Plugins can also call the host API from their UI. In the default trusted mode
 the iframe is same-origin, so `fetch('/api/issues/<id>')` works. When the global
