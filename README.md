@@ -125,6 +125,22 @@ One JSON object is written to stdin. See `fixtures/` for complete examples.
 Fields not relevant to an event are omitted. Event-specific fields include
 `branch`, `tipSha`, `commits`, `pr`, `comment`, `review`, and `notification`.
 
+Issue payloads now also carry the host's current metadata:
+
+| Field | Meaning |
+|---|---|
+| `priority` | `low` / `normal` / `high` / `urgent` |
+| `labels` | Label names, including labels selected in the Issue UI |
+| `parentIssueId` | Parent task id for sub-issues (`null` for top-level issues) |
+| `backlogRank` | Manual Backlog order within the project |
+| `remoteNumber` / `remoteUrl` | Bound remote Issue id and URL |
+| `prUrl` / `prState` | Latest associated PR and its state |
+
+Plugins can also call the host API from their UI. In the default trusted mode
+the iframe is same-origin, so `fetch('/api/issues/<id>')` works. When the global
+sandbox is enabled, use the `postMessage` bridge or implement a backend plugin
+script instead.
+
 ### Output
 
 Write a JSON object to stdout. Empty stdout means "no actions".
