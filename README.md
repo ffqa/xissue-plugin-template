@@ -70,10 +70,10 @@ A plugin can ship a web page and mount it into host slots. Remove the
 |---|---|
 | `project.header` | Project page, under the title row |
 | `project.page` | Project page, below the board |
-| `project.toolbar` | Compact slot in the project action row (host starts at 150×28) |
+| `project.toolbar` | Compact slot at the end of the project action row (host starts at 150×28) |
 | `issue.actions` | Issue page, under the header |
 | `issue.page` | Issue page, at the bottom |
-| `issue.toolbar` | Compact slot next to Issue actions (host starts at 150×28) |
+| `issue.toolbar` | Compact slot at the end of Issue actions (host starts at 150×28) |
 
 Open the standalone page at `/plugins/<plugin-id>`. In xIssue, plugins are
 trusted operator-installed extensions: by default the iframe is same-origin
